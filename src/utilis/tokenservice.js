@@ -25,3 +25,20 @@ export const createToken= async(req,res)=>{
     }
     
 }
+
+export const verifyRestPassToken= async(req,res,next)=>{
+    try {
+        console.log('inverify')
+        const {authorization}=req.headers
+        const authToken=authorization.split(' ')[1]
+        jwt.verify(authToken,process.env.JWT_KEY,(err,data)=>{
+            if(err){
+                return response(res,500,false,err.message)
+            }
+            req.userId=data.userId
+        })
+        next()
+    } catch (error) {
+        return response(res,500,false,err.message)
+    }
+}

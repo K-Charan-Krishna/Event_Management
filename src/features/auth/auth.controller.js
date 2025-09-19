@@ -1,5 +1,5 @@
 import { response } from "../../utilis/response.js"
-import { generateLinkService, registerUserService, userLoginService } from "./auth.services.js"
+import { generateLinkService, registerUserService, userLoginService ,updateUserPasswordService} from "./auth.services.js"
 import { passwordHash } from "../../utilis/passwordhashing.js"
 import jwt from 'jsonwebtoken'
 import { sendEmailResetPasswordLink } from "../../utilis/mailer.js"
@@ -7,6 +7,7 @@ import { sendEmailResetPasswordLink } from "../../utilis/mailer.js"
 
 export const registerUser = async (req, res) => {
     try {
+        console.log('Reg Hit')
         if (!req.body || typeof req.body !== 'object') {
             return response(res, 400, false, 'Request body is missing or invalid!');
         }
@@ -71,7 +72,8 @@ export const generateLink = async (req, res, next) => {
             expiresIn: '10m'
         })
         // take frontend url from env+ token
-        let link=`${process.env.LOCAL_FORNTEND_URL}resetPassword?token:${token}`
+        console.log(token)
+        let link=`${process.env.LOCAL_FORNTEND_URL}resetPassword?token=${token}`
 
         // send email
         let mailResponce= await sendEmailResetPasswordLink(email,link)
@@ -81,4 +83,20 @@ export const generateLink = async (req, res, next) => {
         console.log(error)
         return response(res, 500, false, error.message, [])
     }
+}
+
+export const verifiyResetPassword= async(req,res)=>{
+    try {
+        console.log('API Hit')
+        const {newPassword}=req.body
+        const userId=req.userId
+        let respnce_from_db=await updateUserPasswordService(userId,newPassword)
+        return response(res, 200, true, respnce_from_db, [])
+    } catch (error) {
+        return response(res, 500, false, error.message, [])
+    }
+}
+
+export const summ=(a,b)=>{
+    return a+b
 }

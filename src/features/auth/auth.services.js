@@ -1,5 +1,5 @@
 import User from "../../schemas/user.schema.js"
-import { comparePassword } from "../../utilis/passwordhashing.js"
+import { comparePassword,passwordHash } from "../../utilis/passwordhashing.js"
 
 export const registerUserService = async (payload) => {
     try {
@@ -51,6 +51,20 @@ export const generateLinkService = async (email) => {
             throw new Error('User Not Exists')
         }
         return user._id
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
+export const updateUserPasswordService=async(userId,password)=>{
+        try {
+        let hashed_password=await passwordHash(password)
+        console.log(hashed_password)
+        let user = await User.updateOne({ _id:userId },{$set:{hashedPassword:hashed_password}})
+        if (!user) {
+            throw new Error('User Not Exists')
+        }
+        return 'Password Updated Successfully'
     } catch (error) {
         throw new Error(error.message)
     }
