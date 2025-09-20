@@ -100,3 +100,34 @@ export const verifiyResetPassword= async(req,res)=>{
 export const summ=(a,b)=>{
     return a+b
 }
+
+export const inputValidate=(input)=>{
+    if (typeof input !=='number'){
+        throw new Error ('Input Should be Number!')
+    }
+}
+
+export const callbackfunction=(callback)=>{
+    setTimeout(()=>{
+        callback('from callback')
+    },1000)
+}
+
+export const verifyInput=async(req,res)=>{
+    try {
+        return res.send('200')
+    } catch (error) {
+        return res.send(error)
+    }
+}
+
+export const checkingPromiss=(data)=>{
+    return new Promise((reslove,reject)=>{
+        if(data==='hi'){
+            reslove(data)
+        }
+        else{
+            reject(new Error('error'))
+        }
+    })
+}
